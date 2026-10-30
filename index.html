@@ -1,0 +1,731 @@
+
+<!DOCTYPE html>
+<html lang="ms">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="theme-color" content="#fff7e9">
+<title>Lakara ABC</title>
+<style>
+*{box-sizing:border-box}
+body{margin:0;background:linear-gradient(#fff4dd,#eaf5ff);font-family:"Trebuchet MS",Arial,sans-serif;color:#39415c}
+button{font:inherit;cursor:pointer;touch-action:manipulation}
+.app{width:min(100% - 24px,720px);margin:auto;padding:18px 0 30px;text-align:center}
+header{display:flex;align-items:center;justify-content:space-between;gap:8px;margin-bottom:14px}
+.logo{font-size:clamp(25px,6vw,36px);font-weight:900;color:#7450c8}
+.tagline{font-size:12px;color:#9874b8;text-align:left}
+.counter{background:white;border-radius:20px;padding:9px 12px;color:#7450c8;font-weight:bold;font-size:13px}
+.card{background:#fff;border:3px solid white;border-radius:28px;padding:clamp(14px,4vw,26px);box-shadow:0 8px 0 #e5e9f4}
+.heading{font-size:12px;font-weight:bold;letter-spacing:2px;color:#8a79a9;margin:0}
+.letters{display:flex;justify-content:center;align-items:center;gap:14px;line-height:1.15}
+#bigLetter{font-size:clamp(76px,18vw,110px);font-weight:900;color:#3386e8;text-shadow:3px 4px #d9eaff}
+#smallLetter{font-size:clamp(62px,15vw,88px);font-weight:900;color:#f06eae;text-shadow:3px 4px #ffe0ef}
+.picture{height:clamp(170px,48vw,250px);width:min(100%,350px);margin:8px auto 0;background:#eef8ff;border:3px dashed #cce7fa;border-radius:26px;display:flex;align-items:center;justify-content:center;position:relative;overflow:hidden}
+#emoji{font-size:clamp(100px,27vw,150px);filter:drop-shadow(0 5px 2px #d5dfeb);animation:pop .25s}
+@keyframes pop{from{transform:scale(.8)}to{transform:scale(1)}}
+.picture:before{content:"✦";position:absolute;left:18px;top:12px;color:#ffca58;font-size:28px}
+.picture:after{content:"✦";position:absolute;right:20px;bottom:12px;color:#ffca58;font-size:28px}
+.word-label{margin:17px 0 9px;color:#8b92a6;font-size:12px;font-weight:bold;letter-spacing:2px}
+.word{display:flex;justify-content:center;align-items:center;flex-wrap:wrap;gap:7px}
+.part{border:0;border-radius:14px;padding:6px 12px 10px;font-size:clamp(35px,9vw,55px);font-weight:900;transition:transform .15s}
+.part:active{transform:scale(.94)}
+.blue {
+  background: transparent;
+  color: #2379dc;
+  box-shadow: none;
+}
+
+.pink {
+  background: transparent;
+  color: #df4e98;
+  box-shadow: none;
+}
+.hint{font-size:13px;color:#8b92a6;margin:16px 0}
+.sound-buttons{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:9px}
+.sound-btn{border:0;border-radius:17px;min-height:75px;padding:10px 3px;font-weight:bold}
+.sound-btn span{display:block;font-size:24px;margin-bottom:4px}
+.sound-btn small{display:block;font-size:11px;margin-top:3px}
+.btn1{background:#e5f1ff;color:#2477d4;box-shadow:0 4px #c8e1ff}
+.btn2{background:#ffebf4;color:#d84691;box-shadow:0 4px #ffd0e6}
+.btn3{background:#e4f8e7;color:#258448;box-shadow:0 4px #c8ebcf}
+.status{font-size:12px;color:#77718e;min-height:32px;margin-top:15px;line-height:1.5}
+
+.nav {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) 76px minmax(0, 1fr);
+  gap: 8px;
+  margin-top: 18px;
+  width: 100%;
+  align-items: center;
+}
+
+.nav button {
+  border: 0;
+  border-radius: 17px;
+  min-height: 53px;
+  font-weight: bold;
+  padding: 8px 3px;
+  font-size: 12px;
+  white-space: nowrap;
+  min-width: 0;
+}
+
+
+.prev {
+  background: #8261d7;
+  color: white;
+  box-shadow: 0 4px #6244b2;
+}
+
+.next{background:#8261d7;color:white;box-shadow:0 4px #6244b2}
+footer{font-size:12px;color:#9a91ad;margin-top:20px}
+@media(max-width:380px){.card{padding:12px 9px}.sound-btn{font-size:12px}}
+#word button.word-button {
+  all: unset;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 7px;
+  cursor: pointer;
+  font: inherit;
+  touch-action: manipulation;
+}
+
+#word button.word-button .part {
+  border: none;
+  background: transparent;
+  box-shadow: none;
+  padding: 0;
+  border-radius: 0;
+}
+.quiz-start,.quiz-back{
+  width:100%;
+  margin-top:14px;
+  padding:14px;
+  border:0;
+  border-radius:16px;
+  font-weight:bold;
+}
+.quiz-start{
+  background:#8261d7;
+  color:white;
+  box-shadow:0 4px #6244b2;
+}
+.quiz-back{
+  background:#e5f1ff;
+  color:#2477d4;
+}
+.quiz-panel{margin-top:16px}
+.quiz-picture{
+  min-height:180px;
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  margin:12px 0;
+  background:#eef8ff;
+  border:3px dashed #cce7fa;
+  border-radius:24px;
+  font-size:110px;
+}
+.quiz-picture img{
+  width:65%;
+  height:160px;
+  object-fit:contain;
+}
+.quiz-choices{
+  display:grid;
+  grid-template-columns:repeat(2,minmax(0,1fr));
+  gap:12px;
+}
+.quiz-choice{
+  min-height:78px;
+  border:0;
+  border-radius:18px;
+  background:#e5f1ff;
+  color:#2477d4;
+  font-size:34px;
+  font-weight:900;
+  box-shadow:0 4px #c8e1ff;
+}
+.quiz-choice:disabled{opacity:1}
+.quiz-choice.correct{
+  background:#d8f6df;
+  color:#20783a;
+  box-shadow:0 4px #b7e8c2;
+}
+.quiz-choice.wrong{
+  background:#ffe2e2;
+  color:#bd3030;
+  box-shadow:0 4px #ffc5c5;
+}
+
+.navigation-buttons {
+  display: flex;
+  flex-direction: row;
+  flex-wrap: nowrap;
+  justify-content: center;
+  align-items: stretch;
+  gap: 8px;
+  width: 100%;
+}
+
+.navigation-buttons button {
+  flex: 1 1 0;
+  min-width: 0;
+  white-space: nowrap;
+  padding: 12px 5px;
+  font-size: 14px;
+}
+
+/* Samakan warna butang Sebelum */
+.navigation-buttons .prev {
+  background-color: #8b5cf6;
+  color: white;
+  border: none;
+}
+
+.nav button {
+  box-sizing: border-box;
+  width: 100%;
+  min-width: 0;
+  margin: 0;
+  padding: 8px 3px;
+  font-size: 12px;
+  min-height: 53px;
+  line-height: 1.3;
+}
+
+.nav .quiz-start {
+  background: #f59e0b;
+  color: white;
+  box-shadow: 0 4px #c77708;
+  border: none;
+  border-radius: 14px;
+  font-weight: bold;
+  min-height: 43px;
+}
+
+
+</style>
+</head>
+<body>
+<main class="app">
+<header>
+<div>
+<div class="logo">🌈 Easy ABC</div>
+<div class="tagline">Belajar sambil bermain!</div>
+</div>
+<div class="counter" id="counter">Huruf 1 / 26</div>
+</header>
+
+<section class="card">
+<p class="heading">HARI INI KITA BELAJAR</p>
+<div class="letters">
+<span id="bigLetter">A</span><span id="smallLetter">a</span>
+</div>
+
+<div class="picture"><div id="emoji" role="img" aria-label="Ayam">🐔</div></div>
+
+<p class="word-label">KENALI PERKATAAN</p>
+<div class="word" id="word"></div>
+<p class="hint">Tekan setiap suku kata untuk mendengar sebutannya 👆</p>
+
+<div class="sound-buttons">
+<button class="sound-btn btn1" onclick="playLetter()">
+<span>🔤</span>Dengar huruf<small id="letterLabel">A</small>
+</button>
+<button class="sound-btn btn2" onclick="playSpelling()">
+<span>✨</span>Eja satu-satu<small id="spellLabel">A-Y-A-M</small>
+</button>
+<button class="sound-btn btn3" onclick="playEnglishWord()">
+<span>🔊</span>Listen in English
+<small id="wordLabel">Chicken</small>
+</button>
+</div>
+<div class="status" id="status" aria-live="polite">Jom mula belajar! 🎉</div>
+</section>
+
+<div class="nav">
+  <button class="prev" onclick="changeLetter(-1)">⬅️ Sebelum</button>
+  <button class="quiz-start" onclick="startQuiz()">🎯 Kuiz</button>
+  <button class="next" onclick="changeLetter(1)">Seterusnya ➡️</button>
+</div>
+
+
+<section id="quizPanel" class="card quiz-panel" hidden>
+  <p class="heading" id="quizProgress">SOALAN 1 / 26</p>
+  <h2>Huruf depan apa?</h2>
+  <div id="quizPicture" class="quiz-picture"></div>
+  <div id="quizChoices" class="quiz-choices"></div>
+  <p id="quizStatus" class="status" aria-live="polite"></p>
+  <button class="quiz-start" id="quizNext" onclick="nextQuizQuestion()" hidden>Seterusnya ➡️</button>
+  <button class="quiz-start" id="quizRestart" onclick="startQuiz()" hidden>Cuba Lagi 🔄</button>
+  <button class="quiz-back" onclick="exitQuiz()">Kembali ke Belajar ↩️</button>
+</section>
+<footer>⭐ Bagus! Kita belajar bersama-sama! ⭐</footer>
+</main>
+
+<script>
+// Setiap perkataan dipecahkan mengikut suku kata Bahasa Melayu.
+// Medan parts menentukan warna dan audio bagi setiap bahagian.
+
+const lessons = [
+  {letter:"A",word:"Ayam",english:"Chicken",parts:["A","yam"],emoji:"🐔"},
+  {letter:"B",word:"Bola",english:"Ball",parts:["Bo","la"],emoji:"⚽"},
+  {letter:"C",word:"Cawan",english:"Cup",parts:["Ca","wan"],emoji:"☕"},
+  {letter:"D",word:"Dadu",english:"Dice",parts:["Da","du"],emoji:"🎲"},
+  {letter:"E",word:"Epal",english:"Apple",parts:["E","pal"],emoji:"🍎"},
+  {letter:"F",word:"Foto",english:"Photo",parts:["Fo","to"],emoji:"🖼️"},
+  {letter:"G",word:"Gajah",english:"Elephant",parts:["Ga","jah"],emoji:"🐘"},
+  {letter:"H",word:"Hidung",english:"Nose",parts:["Hi","dung"],emoji:"👃"},
+  {letter:"I",word:"Ikan",english:"Fish",parts:["I","kan"],emoji:"🐟"},
+  {letter:"J",word:"Jari",english:"Finger",parts:["Ja","ri"],emoji:"☝️"},
+  {letter:"K",word:"Kucing",english:"Cat",parts:["Ku","cing"],emoji:"🐱"},
+  {letter:"L",word:"Lampu",english:"Lamp",parts:["Lam","pu"],emoji:"🔦"},
+  {letter:"M",word:"Mata",english:"Eye",parts:["Ma","ta"],emoji:"👀"},
+  {letter:"N",word:"Nanas",english:"Pineapple",parts:["Na","nas"],emoji:"🍍"},
+  {letter:"O",word:"Oren",english:"Orange",parts:["O","ren"],emoji : "🍊"},
+  {letter:"P",word:"Pisang",english:"Banana",parts:["Pi","sang"],emoji:"🍌"},
+  {letter:"Q",word:"Quran",english:"Quran",parts:["Qu","ran"],emoji:"📖"},
+  {letter:"R",word:"Roti",english:"Bread",parts:["Ro","ti"],emoji:"🍞"},
+  {letter:"S",word:"Susu",english:"Milk",parts:["Su","su"],emoji:"🥛"},
+  {letter:"T",word:"Topi",english:"Hat",parts:["To","pi"],emoji:"🎩"},
+  {letter:"U",word:"Ular",english:"Snake",parts:["U","lar"],emoji:"🐍"},
+  {letter:"V",word:"Van",english:"Van",parts:["Van"],emoji:"🚐"},
+  {letter:"W",word:"Warna",english:"Colour",parts:["War","na"],emoji:"🎨"},
+  {letter:"X",word:"X-ray",english:"X-ray",parts:["X-","ray"],emoji:"🩻"},
+  {letter:"Y",word:"yo-yo",english:"Yo-yo",parts:["Yo","yo"],emoji:"🪀"},
+  {letter:"Z",word:"Zebra",english:"Zebra",parts:["Ze","bra"],emoji:"🦓"}
+];
+
+
+let index = 0;
+let voices = [];
+let selectedVoice = null;
+let speechToken = 0;
+
+const $ = id => document.getElementById(id);
+
+function loadVoices() {
+  if (!("speechSynthesis" in window)) {
+    $("status").textContent =
+      "Audio tidak disokong browser ini. Cuba buka dengan Microsoft Edge atau Safari.";
+    return;
+  }
+
+  voices = speechSynthesis.getVoices();
+
+  // Utamakan suara Bahasa Melayu. Jika beberapa suara ada,
+  // cuba pilih suara yang namanya menunjukkan suara perempuan.
+  const malay = voices.filter(v =>
+    /^ms(-|_)?my$/i.test(v.lang) ||
+    /^ms(-|_)/i.test(v.lang) ||
+    /malay|bahasa melayu/i.test(v.name)
+  );
+
+  selectedVoice =
+    malay.find(v => /female|woman|perempuan|zira/i.test(v.name)) ||
+    malay[0] ||
+    null;
+
+  if (selectedVoice) {
+    $("status").textContent =
+      "Suara Bahasa Melayu tersedia: " + selectedVoice.name + " 🎉";
+  } else {
+    $("status").textContent =
+      "Suara Melayu belum ditemui. Semak tetapan suara Bahasa Melayu pada Windows.";
+  }
+}
+
+if ("speechSynthesis" in window) {
+  loadVoices();
+  speechSynthesis.onvoiceschanged = loadVoices;
+}
+
+function speak(text, rate = 0.82) {
+  if (!("speechSynthesis" in window)) {
+    $("status").textContent = "Browser ini tidak menyokong audio suara.";
+    return;
+  }
+
+  if (!selectedVoice) {
+    loadVoices();
+  }
+
+  if (!selectedVoice) {
+    $("status").textContent =
+      "Tiada suara Bahasa Melayu pada peranti ini. Audio tidak dimainkan supaya sebutan Inggeris tidak digunakan.";
+    return;
+  }
+
+  speechSynthesis.cancel();
+  const token = ++speechToken;
+  const utterance = new SpeechSynthesisUtterance(text);
+  utterance.voice = selectedVoice;
+  utterance.lang = selectedVoice.lang || "ms-MY";
+  utterance.rate = rate;
+  utterance.pitch = 1.12;
+  utterance.volume = 1;
+
+  utterance.onstart = () => {
+    if (token === speechToken) {
+      $("status").textContent = "Dengar baik-baik ya! 🔊";
+    }
+  };
+
+  utterance.onend = () => {
+    if (token === speechToken) {
+      $("status").textContent = "Bagus! Nak dengar sekali lagi? ⭐";
+    }
+  };
+
+  speechSynthesis.speak(utterance);
+}
+
+function render() {
+  const item = lessons[index];
+  $("bigLetter").textContent = item.letter;
+  $("smallLetter").textContent = item.letter.toLowerCase();
+if (item.image) {
+  $("emoji").innerHTML =
+    `<img src="${item.image}" alt="${item.word}" style="width:65%;height:65%;object-fit:contain;display:block;margin:auto;">`;
+} else {
+  $("emoji").textContent = item.emoji;
+}
+  $("emoji").setAttribute("aria-label", item.word);
+  $("counter").textContent = `Huruf ${index + 1} / ${lessons.length}`;
+  $("letterLabel").textContent = item.letter + " " + item.letter.toLowerCase();
+  $("spellLabel").textContent = item.word.replace(/-/g, "").toUpperCase().split("").join("-");
+ $("wordLabel").textContent = item.english;
+
+  const wordBox = $("word");
+  wordBox.innerHTML = "";
+
+ 
+const button = document.createElement("button");
+button.className = "word-button";
+button.setAttribute("aria-label", "Dengar perkataan " + item.word);
+
+item.parts.forEach((part, i) => {
+  const span = document.createElement("span");
+  span.className = "part " + (i % 2 === 0 ? "blue" : "pink");
+  span.textContent = part;
+  button.appendChild(span);
+});
+
+button.addEventListener("click", () => {
+  speak(item.letter === "Y" ? "yo yo" : item.word, 0.75);
+});
+wordBox.appendChild(button);
+
+
+  if ("speechSynthesis" in window) speechSynthesis.cancel();
+  $("status").textContent = "Tekan huruf atau suku kata untuk mendengar. 👆";
+}
+
+function changeLetter(amount) {
+  index = (index + amount + lessons.length) % lessons.length;
+  render();
+}
+
+function playLetter() {
+  const letter = lessons[index].letter;
+
+  const names = {
+    A: "a", B: "b", C: "c", D: "d", E: "e",
+    F: "f", G: "g", H: "h", I: "i", J: "j",
+    K: "k", L: "l", M: "m", N: "n", O: "o",
+    P: "p", Q: "q", R: "r", S: "s", T: "t",
+    U: "u", V: "v", W: "w", X: "x",
+    Y: "y", Z: "z"
+  };
+
+  // Sebut nama huruf sekali sahaja.
+  speak(names[letter], 0.8);
+}
+
+function playSpelling() {
+  const item = lessons[index];
+  const letters = (item.letter === "Y" ? "yoyo" : item.word.toLowerCase()).split("");
+  const token = ++speechToken;
+
+  if (!selectedVoice) {
+    loadVoices();
+  }
+  if (!selectedVoice) {
+    speak(item.word);
+    return;
+  }
+
+  speechSynthesis.cancel();
+
+  // Eja satu demi satu, kemudian sebut perkataan penuh.
+  letters.forEach((letter, i) => {
+    const utterance = new SpeechSynthesisUtterance(letter);
+    utterance.voice = selectedVoice;
+    utterance.lang = selectedVoice.lang || "ms-MY";
+    utterance.rate = 0.68;
+    utterance.pitch = 1.1;
+    utterance.onstart = () => {
+      if (token === speechToken) {
+        $("status").textContent = "Eja: " + letters.slice(0, i + 1).join(" - ").toUpperCase();
+      }
+    };
+    speechSynthesis.speak(utterance);
+  });
+
+  const finalWord = new SpeechSynthesisUtterance(item.word);
+  finalWord.voice = selectedVoice;
+  finalWord.lang = selectedVoice.lang || "ms-MY";
+  finalWord.rate = 0.78;
+  finalWord.pitch = 1.1;
+  finalWord.onend = () => {
+    if (token === speechToken) {
+      $("status").textContent = "Bagus! " + item.word.replace(/-/g, "").replace(/^./, c => c.toUpperCase()) + "! ⭐";
+    }
+  };
+  speechSynthesis.speak(finalWord);
+}
+
+function playFullWord() {
+  speakEnglish(lessons[index].english);
+}
+
+function speakEnglish(text) {
+  const voices = speechSynthesis.getVoices();
+  const voice = voices.find(v => /^en(-|_)/i.test(v.lang));
+
+  if (!voice) {
+    $("status").textContent =
+      "Suara Bahasa Inggeris belum tersedia pada peranti ini.";
+    return;
+  }
+
+  speechSynthesis.cancel();
+
+  const utterance = new SpeechSynthesisUtterance(text);
+  utterance.voice = voice;
+  utterance.lang = voice.lang;
+  utterance.rate = 0.8;
+  speechSynthesis.speak(utterance);
+}
+
+
+function playEnglishWord() {
+  const item = lessons[index];
+  const voices = speechSynthesis.getVoices();
+
+  const englishVoice =
+    voices.find(v => /^en(-|_)/i.test(v.lang) &&
+      /female|woman|zira/i.test(v.name)) ||
+    voices.find(v => /^en(-|_)/i.test(v.lang));
+
+  if (!englishVoice) {
+    $("status").textContent =
+      "Suara Bahasa Inggeris belum tersedia pada peranti ini.";
+    return;
+  }
+
+  speechSynthesis.cancel();
+
+  const utterance =
+    new SpeechSynthesisUtterance(item.english);
+
+  utterance.voice = englishVoice;
+  utterance.lang = englishVoice.lang;
+  utterance.rate = 0.8;
+
+  speechSynthesis.speak(utterance);
+}
+
+
+let quizQuestions = [];
+let quizIndex = 0;
+let quizScore = 0;
+let quizAnswered = false;
+let quizTimer = null;
+
+function shuffleArray(array) {
+  const result = [...array];
+
+  for (let i = result.length - 1; i > 0; i--) {
+    const j = Math.floor(Math.random() * (i + 1));
+    [result[i], result[j]] = [result[j], result[i]];
+  }
+
+  return result;
+}
+
+function startQuiz() {
+  clearTimeout(quizTimer);
+
+  quizQuestions = shuffleArray(lessons);
+  quizIndex = 0;
+  quizScore = 0;
+  quizAnswered = false;
+
+  document.querySelector(".card").hidden = true;
+  document.querySelector(".nav").hidden = true;
+  document.querySelector("footer").hidden = true;
+  $("quizPanel").hidden = false;
+
+  $("counter").textContent = "Kuiz 0 / 26";
+  $("quizNext").hidden = true;
+  $("quizRestart").hidden = true;
+
+  showQuizQuestion();
+}
+
+function showQuizQuestion() {
+  if (quizIndex >= quizQuestions.length) {
+    finishQuiz();
+    return;
+  }
+
+  quizAnswered = false;
+
+  const item = quizQuestions[quizIndex];
+
+  $("counter").textContent =
+    "Markah " + quizScore + " / 26";
+
+  $("quizProgress").textContent =
+    "SOALAN " + (quizIndex + 1) + " / 26";
+
+  const picture = $("quizPicture");
+  picture.innerHTML = "";
+
+  if (item.image) {
+    const img = document.createElement("img");
+    img.src = item.image;
+    img.alt = item.word;
+    picture.appendChild(img);
+  } else {
+    picture.textContent = item.emoji;
+  }
+
+  $("quizStatus").textContent = "Pilih huruf pertama perkataan ini.";
+  $("quizNext").hidden = true;
+  $("quizRestart").hidden = true;
+
+  const wrongLetters = shuffleArray(
+    lessons
+      .map(lesson => lesson.letter)
+      .filter(letter => letter !== item.letter)
+  ).slice(0, 3);
+
+  const choices = shuffleArray([
+    item.letter,
+    ...wrongLetters
+  ]);
+
+  const choiceBox = $("quizChoices");
+  choiceBox.innerHTML = "";
+
+  choices.forEach(letter => {
+    const button = document.createElement("button");
+    button.className = "quiz-choice";
+    button.textContent = letter;
+
+    button.addEventListener("click", () => {
+      answerQuiz(letter, button);
+    });
+
+    choiceBox.appendChild(button);
+  });
+}
+
+function answerQuiz(letter, button) {
+  if (quizAnswered) return;
+
+  quizAnswered = true;
+
+  const item = quizQuestions[quizIndex];
+  const buttons = document.querySelectorAll(".quiz-choice");
+
+  buttons.forEach(choice => {
+    choice.disabled = true;
+  });
+
+  if (letter === item.letter) {
+    quizScore++;
+    button.classList.add("correct");
+    $("quizStatus").textContent = "Betul! Bagus! ⭐";
+    speak("Betul. Bagus!", 0.85);
+  } else {
+    button.classList.add("wrong");
+
+    buttons.forEach(choice => {
+      if (choice.textContent === item.letter) {
+        choice.classList.add("correct");
+      }
+    });
+
+    $("quizStatus").textContent =
+      "Jawapan yang betul ialah " + item.letter + "! 😊";
+      speak("Maaf. Salah", 0.85);
+  }
+
+  $("counter").textContent =
+    "Markah " + quizScore + " / 26";
+
+  $("quizNext").hidden = false;
+  $("quizNext").textContent =
+    quizIndex === quizQuestions.length - 1
+      ? "Lihat Markah 🏆"
+      : "Seterusnya ➡️";
+}
+
+function nextQuizQuestion() {
+  if (!quizAnswered) return;
+
+  quizIndex++;
+  showQuizQuestion();
+}
+
+function finishQuiz() {
+  $("quizProgress").textContent = "KUIZ SELESAI! 🎉";
+  $("quizPicture").textContent = "🏆";
+  $("quizChoices").innerHTML = "";
+
+  $("quizStatus").textContent =
+    "Markah Anda: " + quizScore + " / 26 " +
+    (quizScore === 26
+      ? "Hebat! Semua betul! 🌟"
+      : "Bagus! Jom cuba lagi! ⭐");
+
+  $("counter").textContent = quizScore + " / 26";
+  $("quizNext").hidden = true;
+  $("quizRestart").hidden = false;
+
+  playTahniah();
+
+}
+function playTahniah() {
+  if (!("speechSynthesis" in window)) return;
+
+  window.speechSynthesis.cancel();
+
+  const ucapan = new SpeechSynthesisUtterance("Tahniah!");
+  ucapan.lang = "ms-MY";
+  ucapan.rate = 0.85;
+  ucapan.pitch = 1.2;
+
+  window.speechSynthesis.speak(ucapan);
+}
+
+function exitQuiz() {
+  clearTimeout(quizTimer);
+
+  $("quizPanel").hidden = true;
+  document.querySelector(".card").hidden = false;
+  document.querySelector(".nav").hidden = false;
+  document.querySelector("footer").hidden = false;
+
+  render();
+}
+
+render();
+</script>
+</body>
+</html>
